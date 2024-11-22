@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import localFont from "next/font/local";
 import "./globals.css";
+import 'bootstrap/dist/css/bootstrap.css';
+/*import 'bootstrap-icons/font/bootstrap-icons.css';*/
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
@@ -24,8 +26,8 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
-      <body className={`${geistSans.variable} ${geistMono.variable}`}>
+    <html lang="es">
+      <body className={`${geistSans.variable} ${geistMono.variable} d-flex justify-content-center align-items-center`} >
         {children}
       </body>
     </html>
