@@ -12,5 +12,8 @@
 
 .div-principal{
     background-color:#272A39; 
-    width: 90%;
+}
+
+.div_interno{
+    width: 95%;
 }

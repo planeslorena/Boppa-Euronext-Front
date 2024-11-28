@@ -5,43 +5,106 @@ import { Table } from "./components/Table/table";
 import { LineChart } from "./components/Graficos/LineChart";
 import { useEffect, useState } from "react";
 import { getDataGraficos } from "./services/empresas";
+import { DoughnutChart } from "./components/Doughnut/doughnut";
+import { getDataGraficosIndices } from "./services/indices";
 
 
 export default function Home() {
-  const [datos, setDatos] = useState([{}]);
+  const [datos, setDatos] = useState<any[]>([]);
+  const [labels, setLabels] = useState<any[]>([]);
+  const [empresa, setEmpresa] = useState<any>({
+    codEmpresa: 'N100',
+    empresaNombre: 'Euronext 100 Index',
+    ultimaCot: '',
+    variacion: ''
+  });
 
-  const getDatos = async () => {
-    const datos = await getDataGraficos('JNJ');
-    let newDatos = [['Hora', 'JNJ']]
-    datos.map((dato:any) =>{
-      newDatos.push([dato.hora, Number(dato.cotization)])
+  const generarColorAleatorio = () => {
+    const r = Math.floor(Math.random() * 255);
+    const g = Math.floor(Math.random() * 255);
+    const b = Math.floor(Math.random() * 255);
+    return `rgba(${r}, ${g}, ${b}, 1)`;
+  };
+
+  const getDatosIndice = async () => {
+    const datos = await getDataGraficosIndices(5,1);
+    let labels: any[] = [];
+    datos[0].map((dato: any) => {
+      if(dato.hora == '09:00') {
+        const label = `${dato.fecha.substring(8,10)}-${dato.fecha.substring(5,7)} ${dato.hora.substring(0,2)}hs`
+        labels.push(label);
+      } else {
+        const label = `${dato.hora.substring(0,2)}hs`
+        labels.push(label);
+      }
     })
-    setDatos(newDatos);
+    const datasets = datos.map((dataset:any) => {
+      let data:number[] = [];
+      dataset.forEach((dato:any) => {
+        data.push(dato.valorIndice);
+      });
+
+      return {
+        label: dataset[0].codigoIndice,
+        data: data,
+        borderColor: dataset[0].codigoIndice == 'N100' ? '#31B6A6' :generarColorAleatorio(),
+        backgroundColor: generarColorAleatorio().replace('1)', '0.2)'),
+      }
+    })
+    setLabels(labels);
+    setDatos(datasets)
+  }
+
+  const cargarGraficoEmpr = async (empresa: any) => {
+    const datos = await getDataGraficos(empresa.codEmpresa, 5);
+    console.log(datos);
+    let labels: any[] = [];
+    let data: number[] = [];
+    datos.map((dato: any) => {
+      if(dato.hora == '09:00') {
+        const label = `${dato.fecha.substring(8,10)}-${dato.fecha.substring(5,7)} ${dato.hora.substring(0,2)}hs`
+        labels.push(label);
+      } else {
+        const label = `${dato.hora.substring(0,2)}hs`
+        labels.push(label);
+      }
+      data.push(dato.cotization);
+    })
+    const dataset = [{
+      label: empresa.codEmpresa,
+      data: data,
+      borderColor: '#31B6A6',
+      backgroundColor: '#31B6A6',
+    }]
+    setLabels(labels);
+    setDatos(dataset)
+    setEmpresa(empresa);
   }
 
   useEffect(() => {
-    getDatos();
+    getDatosIndice();
   }, []);
 
   return (
-    <div className="div-principal rounded">
-      <Nav />
-      <div className="container text-center text-color">
-        <div className="row">
-          <div className="col-9 rounded">
-            <LineChart datos={datos} />
+    <div className="div-principal rounded d-flex justify-content-center align-items-center m-5">
+      <div className="div_interno">
+        <Nav />
+        <div className="container text-center text-color">
+          <div className="row">
+            <div className="col-9 rounded">
+              <LineChart datos={datos} labels={labels} empresa={empresa} />
+            </div>
+            <div className="col-3 div-empresas rounded">
+              <Table cargarGraficoEmpr={(empresa: any) => cargarGraficoEmpr(empresa)} />
+            </div>
           </div>
-          <div className="col-3 div-empresas rounded">
-            <Table />
-          </div>
-        </div>
-        <div className="row m-2">
-          <div className="col div-pie-chart rounded">
-            col
+          <div className="row mt-2 ms-1 mb-4">
+            <div className="col div-pie-chart rounded">
+              <DoughnutChart />
+            </div>
           </div>
         </div>
       </div>
     </div>
-
   );
 }

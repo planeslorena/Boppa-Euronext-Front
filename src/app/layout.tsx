@@ -27,7 +27,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="es">
-      <body className={`${geistSans.variable} ${geistMono.variable} d-flex justify-content-center align-items-center`} >
+      <body className={`${geistSans.variable} ${geistMono.variable}`} >
         {children}
       </body>
     </html>
