@@ -33,11 +33,13 @@ export const DoughnutChart = () => {
       },
     ],
   };
+
   const options = {
     responsive: true,
     plugins: {
       legend: {
         display: true,
+        position: 'right' as const,
       },
       title: {
         display: false,

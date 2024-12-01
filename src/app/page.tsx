@@ -26,8 +26,8 @@ export default function Home() {
     return `rgba(${r}, ${g}, ${b}, 1)`;
   };
 
-  const getDatosIndice = async () => {
-    const datos = await getDataGraficosIndices(5,1);
+  const getDatosIndice = async (dias:number, allIndices:number) => {
+    const datos = await getDataGraficosIndices(dias,allIndices);
     let labels: any[] = [];
     datos[0].map((dato: any) => {
       if(dato.hora == '09:00') {
@@ -52,12 +52,17 @@ export default function Home() {
       }
     })
     setLabels(labels);
-    setDatos(datasets)
+    setDatos(datasets);
+    setEmpresa({
+      codEmpresa: 'N100',
+      empresaNombre: 'Euronext 100 Index',
+      ultimaCot: '',
+      variacion: ''
+    })
   }
 
-  const cargarGraficoEmpr = async (empresa: any) => {
-    const datos = await getDataGraficos(empresa.codEmpresa, 5);
-    console.log(datos);
+  const cargarGraficoEmpr = async (empresa: any, dias: number) => {
+    const datos = await getDataGraficos(empresa.codEmpresa, dias);
     let labels: any[] = [];
     let data: number[] = [];
     datos.map((dato: any) => {
@@ -82,7 +87,7 @@ export default function Home() {
   }
 
   useEffect(() => {
-    getDatosIndice();
+    getDatosIndice(1,0);
   }, []);
 
   return (
@@ -92,10 +97,10 @@ export default function Home() {
         <div className="container text-center text-color">
           <div className="row">
             <div className="col-9 rounded">
-              <LineChart datos={datos} labels={labels} empresa={empresa} />
+              <LineChart datos={datos} labels={labels} empresa={empresa} cargarGraficoEmpr={(empresa: any, dias: number) => cargarGraficoEmpr(empresa, dias)} getDatosIndice={(dias:number, allIndices:number) => getDatosIndice(dias,allIndices)}/>
             </div>
             <div className="col-3 div-empresas rounded">
-              <Table cargarGraficoEmpr={(empresa: any) => cargarGraficoEmpr(empresa)} />
+              <Table cargarGraficoEmpr={(empresa: any, dias: number) => cargarGraficoEmpr(empresa, dias)}  getDatosIndice={(dias:number, allIndices:number) => getDatosIndice(dias,allIndices)} />
             </div>
           </div>
           <div className="row mt-2 ms-1 mb-4">

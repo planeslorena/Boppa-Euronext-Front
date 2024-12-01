@@ -1,3 +1,11 @@
 .div-linechart {
     background-color: #2c3546;
 }
+
+.btn-dias{
+    color:#D1D4DC
+}
+
+.btn-dias:hover{
+    background-color:#272A39
+}
