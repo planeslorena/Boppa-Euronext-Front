@@ -65,7 +65,8 @@ export const LineChart = (props: any) => {
     responsive: true,
     plugins: {
       legend: {
-        display: false,
+        display: true,
+        position: 'top' as const
       },
       title: {
         display: false,

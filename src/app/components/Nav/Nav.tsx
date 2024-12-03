@@ -28,10 +28,10 @@ export function Nav(props:any) {
             </div>
             <div className='me-3'>
                 <button type='button' className='btn btn-language me-3' onClick={() => cambiarMoneda()}>
-                <i className="bi bi-currency-exchange me-2"></i>{moneda}
+                <i className="bi bi-currency-exchange me-2"></i>{moneda == 'EUR' ? 'USD' : 'EUR'}
                 </button>
                 <button type='button' className='btn btn-language me-3' onClick={() => cambiarIdioma()}>
-                    <i className="bi bi-translate me-2"></i>{language}
+                    <i className="bi bi-translate me-2"></i>{language == 'NED' ? 'ESP': 'NED'}
                 </button>
             </div>
         </div>
