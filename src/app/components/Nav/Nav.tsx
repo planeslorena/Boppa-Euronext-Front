@@ -1,7 +1,11 @@
+// eslint-disable-next-line react-hooks/exhaustive-deps
+/* eslint-disable @next/next/no-img-element */
+
 import { useTranslation } from 'next-i18next';
 import '../../i18n';
 import { useEffect, useState } from 'react';
 import './nav.css'
+
 
 export function Nav(props:any) {
     const {cambiarMoneda, moneda} = props;

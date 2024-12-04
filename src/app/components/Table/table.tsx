@@ -1,3 +1,5 @@
+/* eslint-disable @next/next/no-img-element */
+// eslint-disable-next-line react-hooks/exhaustive-deps
 'use client'
 import { getDataEmpresas } from "@/app/services/empresas";
 import { useContext, useEffect, useState } from "react";
@@ -5,6 +7,7 @@ import "./table.css"
 import { getDataIndice } from "@/app/services/indices";
 import { useTranslation } from "next-i18next";
 import { ConversionContext } from "@/app/context/conversion.context";
+
 
 
 export const Table = (props: any) => {
@@ -31,7 +34,6 @@ export const Table = (props: any) => {
         const indice = await getDataIndice();
         setIndice(indice);
     }
-
 
     useEffect(() => {
         getAllEmpresas();

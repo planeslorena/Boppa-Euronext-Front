@@ -15,12 +15,7 @@ export default function Home() {
   const { conversion, setConversion } = useContext(ConversionContext);
   const [datos, setDatos] = useState<any[]>([]);
   const [labels, setLabels] = useState<any[]>([]);
-  const [empresa, setEmpresa] = useState<any>({
-    codEmpresa: 'N100',
-    empresaNombre: 'Euronext 100 Index',
-    ultimaCot: '',
-    variacion: ''
-  });
+  const [empresa, setEmpresa] = useState<any>();
 
   const cambiarMoneda = () => {
     if (moneda == 'EUR') {
@@ -39,8 +34,7 @@ export default function Home() {
 
   const getDatosIndice = async (dias:number, allIndices:number) => {
     const datos = await getDataGraficosIndices(dias,allIndices);
-    console.log(datos);
-    let labels: any[] = [];
+    const labels: any[] = [];
     datos[0].map((dato: any) => {
       if(dato.hora == '09:00') {
         const label = `${dato.fecha.substring(8,10)}-${dato.fecha.substring(5,7)} ${dato.hora.substring(0,2)}hs`
@@ -51,16 +45,16 @@ export default function Home() {
       }
     })
     const datasets = datos.map((dataset:any) => {
-      let data:number[] = [];
+      const data:number[] = [];
       dataset.forEach((dato:any) => {
         data.push(dato.valorIndice*conversion);
       });
-
+      const color = generarColorAleatorio();
       return {
         label: dataset[0].codigoIndice,
         data: data,
-        borderColor: dataset[0].codigoIndice == 'N100' ? '#31B6A6' :generarColorAleatorio(),
-        backgroundColor: generarColorAleatorio().replace('1)', '0.2)'),
+        borderColor: dataset[0].codigoIndice == 'N100' ? '#31B6A6' :color,
+        backgroundColor: dataset[0].codigoIndice == 'N100' ? '#31B6A6':color,
       }
     })
 
@@ -76,8 +70,8 @@ export default function Home() {
 
   const cargarGraficoEmpr = async (empresa: any, dias: number) => {
     const datos = await getDataGraficos(empresa.codEmpresa, dias);
-    let labels: any[] = [];
-    let data: number[] = [];
+    const labels: any[] = [];
+    const data: number[] = [];
     datos.map((dato: any) => {
       if(dato.hora == '09:00') {
         const label = `${dato.fecha.substring(8,10)}-${dato.fecha.substring(5,7)} ${dato.hora.substring(0,2)}hs`
@@ -94,7 +88,6 @@ export default function Home() {
       borderColor: '#31B6A6',
       backgroundColor: '#31B6A6',
     }]
-    console.log(dataset);
     setLabels(labels);
     setDatos(dataset)
     setEmpresa(empresa);
@@ -119,10 +112,10 @@ export default function Home() {
         <div className="container text-center text-color">
           <div className="row">
             <div className="col-9 rounded">
-              <LineChart datos={datos} labels={labels} empresa={empresa} cargarGraficoEmpr={(empresa: any, dias: number) => cargarGraficoEmpr(empresa, dias)} getDatosIndice={(dias:number, allIndices:number) => getDatosIndice(dias,allIndices)}/>
+              {empresa  && <LineChart datos={datos} labels={labels} empresa={empresa} cargarGraficoEmpr={(empresa: any, dias: number) => cargarGraficoEmpr(empresa, dias)} getDatosIndice={(dias:number, allIndices:number) => getDatosIndice(dias,allIndices)}/>}
             </div>
             <div className="col-3 div-empresas rounded pt-3">
-              <Table cargarGraficoEmpr={(empresa: any, dias: number) => cargarGraficoEmpr(empresa, dias)}  getDatosIndice={(dias:number, allIndices:number) => getDatosIndice(dias,allIndices)} moneda={moneda}/>
+            {empresa && <Table cargarGraficoEmpr={(empresa: any, dias: number) => cargarGraficoEmpr(empresa, dias)}  getDatosIndice={(dias:number, allIndices:number) => getDatosIndice(dias,allIndices)} moneda={moneda}/>}
             </div>
           </div>
           <div className="row mt-3 mb-4">

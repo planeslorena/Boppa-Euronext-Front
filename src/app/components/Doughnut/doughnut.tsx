@@ -1,3 +1,4 @@
+// eslint-disable-next-line react-hooks/exhaustive-deps
 import { Chart as ChartJS, ArcElement, Tooltip, Legend } from 'chart.js';
 import { Doughnut } from 'react-chartjs-2';
 import './doughnut.css'
@@ -22,8 +23,8 @@ export const DoughnutChart = () => {
 
   const obtenerDatos = async () => {
     const datos = await getDataParticipacion();
-    let labels: string[] = []
-    let dataset: number[] = []
+    const labels: string[] = []
+    const dataset: number[] = []
     const newDatos = datos.map((empresa: any, index: number) => {
       labels.push(`${empresa.codEmpresa}-${empresa.empresaNombre}`);
       dataset.push(empresa.participacionMercado);
@@ -36,7 +37,6 @@ export const DoughnutChart = () => {
     setLabels(labels);
     setDatos(newDatos);
   }
-
   useEffect(() => {
     obtenerDatos();
   }, []);
@@ -69,6 +69,9 @@ export const DoughnutChart = () => {
   return (
     <div className='d-flex flex-column align-items-center contenedor-doughnut m-3'>
       <div className='d-flex flex-row justify-content-around align-items-center w-100 m-3'>
+      <div className='w-25 mt-3'>
+        {t('bolsa')} 
+      </div>
         <div>
           <Doughnut data={data} options={options} />
         </div>
@@ -76,12 +79,12 @@ export const DoughnutChart = () => {
           <div className='fs-3 mb-2'>
             {t('participacion')}
           </div>
-          <table>
+          <table >
             <tbody>
               {
                 datos.map((item: any, index: any) => {
                   return (
-                    <tr className='card-empresa'>
+                    <tr className='card-empresa' key={index+item.codEmpresa}>
                       <td>
                         <div className='rounded-circle me-3' style={{ backgroundColor: item.backgroundColor, width: "25px", height: "25px" }} ></div>
                       </td>
@@ -95,8 +98,7 @@ export const DoughnutChart = () => {
             </tbody>
           </table>
         </div>
-        <div className='w-25'>
-        </div>
+
       </div>
     </div>
   )
